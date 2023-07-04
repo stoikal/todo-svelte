@@ -16,8 +16,13 @@ async function loadData () {
 
 async function handleItemToggle (event) {
   const item = event.detail
-  console.log('===~item.id, item.is_done~===', item.id, item.is_done)
   await todosService.setIsDone(item.id, !item.is_done)
+  loadData()
+}
+
+async function handleItemDelete (event) {
+  const item = event.detail
+  await todosService.delete(item.id)
   loadData()
 }
 
@@ -39,12 +44,16 @@ $: doneTodos = todos.filter(i => i.is_done)
   <TodoList
     items={notDoneTodos}
     on:itemtoggle={handleItemToggle}
+    on:itemdelete={handleItemDelete}
   />
 
-  <h2 font="bold" text="lg" m="b-2">Done</h2>
+  {#if doneTodos.length}
+    <h2 font="bold" text="lg" m="b-2">Done</h2>
+  {/if}
 
   <TodoList
     items={doneTodos}
     on:itemtoggle={handleItemToggle}
+    on:itemdelete={handleItemDelete}
   />
 </main>

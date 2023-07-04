@@ -6,17 +6,25 @@
 
   export let items;
 
-  function handleItemClick (event) {
+  function handleItemToggle (event) {
     dispatch('itemtoggle', event.detail)
+  }
+
+  function handleItemDelete (event) {
+    dispatch('itemdelete', event.detail)
   }
 </script>
 
-<ul>
+<ul
+  class="mb-6"
+>
   {#each items as item (item.id)}
-	  <li>
+	  <li
+    >
       <TodoItem
         item={item}
-        on:click={handleItemClick}
+        on:click={handleItemToggle}
+        on:delete={handleItemDelete}
       />
     </li>
   {/each}
