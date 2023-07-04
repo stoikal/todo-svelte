@@ -5,6 +5,8 @@ import TodoList from './lib/TodoList.svelte';
 
 let todos = []
 
+let input = ''
+
 onMount(() => {
   loadData()
 })
@@ -12,6 +14,17 @@ onMount(() => {
 async function loadData () {
   const data = await todosService.getAll()
   todos = data
+}
+
+async function createTodo () {
+  await todosService.create({
+    title: input,
+    parent: null,
+    is_done: false
+  })
+
+  input = ''
+  loadData()
 }
 
 async function handleItemToggle (event) {
@@ -29,6 +42,16 @@ async function handleItemDelete (event) {
 $: notDoneTodos = todos.filter(i => !i.is_done)
 $: doneTodos = todos.filter(i => i.is_done)
 
+
+async function handleAdd () {
+  createTodo()
+}
+
+const handleKeyDown = (e) => {
+  if (e.key === 'Enter') {
+    createTodo()
+  }
+}
 
 </script>
 
@@ -56,4 +79,20 @@ $: doneTodos = todos.filter(i => i.is_done)
     on:itemtoggle={handleItemToggle}
     on:itemdelete={handleItemDelete}
   />
+
+  <div class="flex">
+    <input
+      bind:value={input}
+      class="text-black grow-1 rounded-l px-2 py-1"
+      on:keydown={handleKeyDown}
+    >
+    <button
+      class="bg-orange hover:bg-orange-600 p-2 rounded-r"
+      on:click={handleAdd}
+    >
+      <div class="i-ph-plus-bold">
+        add
+      </div>
+    </button>
+  </div>
 </main>
